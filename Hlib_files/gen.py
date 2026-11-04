@@ -1,0 +1,56 @@
+from PyQt5.QtWidgets import QDialog, QFormLayout, QSpinBox, QDialogButtonBox
+import numpy
+class Hgen:
+    def __init__(self):
+        super().__init__()
+        self.low = None
+        self.high = None
+        self.amount = None
+    def generate_fun(self):
+        print("Generate")
+        dialog = RangeDialog(self)
+        if dialog.exec_() == QDialog.Accepted:
+            self.low, self.high, self.amount = dialog.values()
+            print(f"Generate from {self.low} to {self.high}")
+        self.tab = numpy.random.randint(self.low, self.high, size=self.amount, dtype=int)
+        return self.tab
+
+
+class RangeDialog(QDialog):
+    MIN, MAX = 0, 1000
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Zakres")
+
+        self.low = QSpinBox()
+        self.high = QSpinBox()
+        self.amount = QSpinBox()
+        self.low.setRange(self.MIN, self.MAX - 1)
+        self.high.setRange(self.MIN + 1, self.MAX)
+        self.amount.setRange(0, 10**6)
+        self.low.setValue(0)
+        self.high.setValue(100)
+        self.amount.setValue(10)
+        self.low.valueChanged.connect(self.update_limits)
+        self.high.valueChanged.connect(self.update_limits)
+        self.update_limits()
+
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+
+        layout = QFormLayout(self)
+        layout.addRow("Minimum:", self.low)
+        layout.addRow("Maksimum:", self.high)
+        layout.addRow("Ilość", self.amount)
+        layout.addRow(buttons)
+
+    def update_limits(self):
+        # high must stay above low, low must stay below high
+        self.high.setMinimum(self.low.value() + 1)
+        self.low.setMaximum(self.high.value() - 1)
+
+    def values(self):
+        return self.low.value(), self.high.value(), self.amount.value()
+
