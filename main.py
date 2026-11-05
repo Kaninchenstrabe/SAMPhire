@@ -68,17 +68,18 @@ class App(Hsort, Hfiles, Habout, Hgen, Hmeas, Hvis, Hcomp, QMainWindow,QWidget):
         self.show()
 
         i = 0
-        while i < 10:
+        while i < 16:
             self.generate_fun()
             self.custom_sort()
-            self.sorted_sort()
+            self.visualize_fun()
+            #self.sorted_sort()
             print("###")
             i += 1
         ac=sum(self.results["Custom"])/len(self.results["Custom"])
-        ap=sum(self.results["Predef"]) / len(self.results["Predef"])
+        # #ap=sum(self.results["Predef"]) / len(self.results["Predef"])
         print(ac)
-        print(ap)
-        print(ac/ap)
+        #print(ap)
+        #print(ac/ap)
 
 
 

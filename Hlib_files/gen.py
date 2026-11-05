@@ -33,7 +33,7 @@ class RangeDialog(QDialog):
         self.amount.setRange(0, 10**6)
         self.low.setValue(0)
         self.high.setValue(100)
-        self.amount.setValue(1024)
+        self.amount.setValue(64)
         self.low.valueChanged.connect(self.update_limits)
         self.high.valueChanged.connect(self.update_limits)
         self.update_limits()
@@ -46,7 +46,7 @@ class RangeDialog(QDialog):
         layout.addRow("Minimum:", self.low)
         layout.addRow("Maksimum:", self.high)
         layout.addRow("Ilość", self.amount)
-        layout.addRow(buttons)
+        layout.addWidget(buttons)
 
     def update_limits(self):
         # high must stay above low, low must stay below high
