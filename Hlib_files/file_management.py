@@ -1,53 +1,28 @@
 import os
 from PyQt5.QtWidgets import QFileDialog
 class Hfiles:
-    def import_file(self):
+
+    def file_save(self):
         options = QFileDialog.Options()
-        fileName, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "", options=options)
-        file = open(fileName, 'r')
-        self.tab["Unsorted"]=file.read()
-        print(self.tab["Unsorted"])
-        file.close()
-        print("Import")
-
-
-    def export_file(self):
-        Dialog = QFileDialog()
-        Dialog.setAcceptMode(QFileDialog.AcceptMode.AcceptSave)
-        fileName, _ = QFileDialog.getSaveFileName(self, "Export", "", options=Dialog.Options())
-        file = open(f"{fileName}.txt", 'w')
-        file.write(str(self.tab["Unsorted"]))
-        file.close()
-        print("Export")
-
-
-
-    def save_file(self):
-
-        print("Save")
-
-    def saveas_file(self):
-        options = QFileDialog.Options()
-        fileName, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getOpenFileName()", "", options=options)
-        file = open(fileName, 'w')
+        filename, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getOpenFileName()","", "JSON (*.json)", options=options)
+        file = open(filename, 'w')
         text = "Zawartość pliku"
         file.write(text)
         file.close()
 
 
-
-    def open_file(self):
+    def file_open(self):
         options = QFileDialog.Options()
-        fileName, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "", options=options)
-        file = open(fileName, 'r')
+        filename, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "", "JSON (*.json)", options=options)
+        file = open(filename, 'r')
         text = file.read()
         print(text)
         file.close()
 
 
-    def exit_file(self):
+    def file_exit(self):
         os._exit(0)
 
 class Habout:
-    def about_fun(self):
+    def about(self):
         print("About")

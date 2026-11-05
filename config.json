@@ -1,25 +1,19 @@
   {
-     "File": [
-          "Import",
-          "Export",
-          "Open",
-          "Save",
-          "Save as",
-          "Exit"
-        ],
-     "Sort": [
-          "Custom",
-          "Sorted",
-          "Sorting techniques"
-        ],
-     "Measure": [],
-     "Generate": [],
-     "Compare": [
-          "Add",
-          "Show",
-          "Explain"
-        ],
-     "Visualize": [],
+     "File": {
+          "Open": "file_open",
+          "Save":  "file_save",
+          "Exit": "file_exit"
+     },
+     "Data": {
+          "Import": "data_import",
+          "Export": "data_export",
+          "Generate": "data_generate"
+     },
+     "Comparison": {
+          "Settings": "comp_set",
+          "Show":  "comp_show",
+          "Explain": "comp_explain"
+     },
      "About": []
 
   }

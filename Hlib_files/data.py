@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QFormLayout, QSpinBox, QDialogButtonBox
+from PyQt5.QtWidgets import QDialog, QFormLayout, QSpinBox, QDialogButtonBox, QFileDialog
 import numpy
 from Hlib_files.visualize import Hvis
 class Hgen:
@@ -7,16 +7,34 @@ class Hgen:
         self.low = None
         self.high = None
         self.amount = None
-    def generate_fun(self):
+    def data_generate(self):
         #print("Generate")
         dialog = RangeDialog(self)
         if dialog.exec_() == QDialog.Accepted:
             self.low, self.high, self.amount = dialog.values()
             #print(f"Generate from {self.low} to {self.high}")
         self.tab["Unsorted"] = numpy.random.randint(self.low, self.high, size=self.amount, dtype=int)
-        Hvis.visualize_fun(self)
+        Hvis.visualize_fun(self, "Unsorted")
         return self.tab["Unsorted"]
 
+    def data_import(self):
+        options = QFileDialog.Options()
+        filename, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "",
+                                                  "Text files (*.txt);;CSV files (*.csv)", options=options)
+        file = open(filename, 'r')
+        text = file.read()
+        print(text)
+        file.close()
+
+
+    def data_export(self):
+        options = QFileDialog.Options()
+        filename, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getOpenFileName()", "",
+                                                  "Text files (*.txt);;CSV files (*.csv)", options=options)
+        file = open(filename, 'w')
+        text = "Zawartość pliku"
+        file.write(text)
+        file.close()
 
 class RangeDialog(QDialog):
     MIN, MAX = 0, 10**6
@@ -33,7 +51,7 @@ class RangeDialog(QDialog):
         self.amount.setRange(0, 10**6)
         self.low.setValue(0)
         self.high.setValue(100)
-        self.amount.setValue(64)
+        self.amount.setValue(10)
         self.low.valueChanged.connect(self.update_limits)
         self.high.valueChanged.connect(self.update_limits)
         self.update_limits()
@@ -55,4 +73,5 @@ class RangeDialog(QDialog):
 
     def values(self):
         return self.low.value(), self.high.value(), self.amount.value()
+
 
