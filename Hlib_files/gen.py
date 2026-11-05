@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QFormLayout, QSpinBox, QDialogButtonBox
 import numpy
+from Hlib_files.visualize import Hvis
 class Hgen:
     def __init__(self):
         super().__init__()
@@ -7,17 +8,18 @@ class Hgen:
         self.high = None
         self.amount = None
     def generate_fun(self):
-        print("Generate")
+        #print("Generate")
         dialog = RangeDialog(self)
         if dialog.exec_() == QDialog.Accepted:
             self.low, self.high, self.amount = dialog.values()
-            print(f"Generate from {self.low} to {self.high}")
-        self.tab = numpy.random.randint(self.low, self.high, size=self.amount, dtype=int)
-        return self.tab
+            #print(f"Generate from {self.low} to {self.high}")
+        self.tab["Unsorted"] = numpy.random.randint(self.low, self.high, size=self.amount, dtype=int)
+        Hvis.visualize_fun(self)
+        return self.tab["Unsorted"]
 
 
 class RangeDialog(QDialog):
-    MIN, MAX = 0, 1000
+    MIN, MAX = 0, 10**6
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -31,7 +33,7 @@ class RangeDialog(QDialog):
         self.amount.setRange(0, 10**6)
         self.low.setValue(0)
         self.high.setValue(100)
-        self.amount.setValue(10)
+        self.amount.setValue(1024)
         self.low.valueChanged.connect(self.update_limits)
         self.high.valueChanged.connect(self.update_limits)
         self.update_limits()
