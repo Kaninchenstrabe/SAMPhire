@@ -1,10 +1,7 @@
   {
-     "File": [
-          "Import",
-          "Export",
+     "File": {
           "Open",
           "Save",
-          "Save as",
           "Exit"
         ],
      "Sort": [
@@ -12,14 +9,16 @@
           "Sorted",
           "Sorting techniques"
         ],
-     "Measure": [],
-     "Generate": [],
-     "Compare": [
-          "Add",
+     "Data": [
+          "Import",
+          "Export",
+          "Generate"
+        ],
+     "Comparison": [
+          "Settings",
           "Show",
           "Explain"
         ],
-     "Visualize": [],
      "About": []
 
   }
