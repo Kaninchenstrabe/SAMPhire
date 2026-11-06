@@ -17,6 +17,7 @@ class Hgen:
             #print(f"Generate from {self.low} to {self.high}")
         self.tab["Unsorted"] = numpy.random.randint(self.low, self.high, size=self.amount, dtype=int)
         Hvis.visualize_fun(self, "Unsorted")
+
         return self.tab["Unsorted"]
 
     def data_import(self):

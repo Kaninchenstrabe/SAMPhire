@@ -3,3 +3,37 @@
           "Sorted",
           "Sorting techniques"
         ],
+
+
+    # def selection_sort(self):
+    #     start = time.perf_counter()
+    #     selection(self.tab["Sorted"])
+    #     koniec = time.perf_counter()
+    #     t = (koniec - start)*10**6
+    #     self.data["Time"].append(t)
+    #     return t
+    #
+    # def custom_sort(self):
+    #     start = time.perf_counter()
+    #     custom(self.data["Sorted"])
+    #     koniec = time.perf_counter()
+    #     t=(koniec-start)*10**6
+    #     self.data["Time"].append(t)
+    #     return t
+    #
+    # def built_in_sort(self):
+    #     start = time.perf_counter()
+    #     built_in(self.data["Sorted"])
+    #     koniec = time.perf_counter()
+    #     t = (koniec - start)*10**6
+    #     self.data["Time"].append(t)
+    #     return t
+    #
+    # def techniques_sort(self):
+    #     print("techniques")
+    #     start = time.perf_counter()
+    #     techniques(self.data["Sorted"])
+    #     koniec = time.perf_counter()
+    #     t = (koniec - start) * 10 ** 6
+    #     return t
+    #     self.data["Time"].append(t)

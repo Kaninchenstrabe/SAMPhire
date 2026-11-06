@@ -17,7 +17,7 @@ class Hsort:
         self.faults=[]
     def load_data(self, data):
         self.data["Unsorted"]=data
-        self.data["Sorted"]=data
+        #self.data["Sorted"]=data
     def load_algorithms(self):
         self.dir = Path(__file__).parent
         for file in sorted((self.dir / "Algorithms").glob("*.py")):
@@ -27,45 +27,14 @@ class Hsort:
             self.algorithms.update({module.__name__:module})
     def sort(self):
         start = time.perf_counter()
-        self.algorithms[self.type].main(self.data["Sorted"])
+        self.data["Sorted"]=self.algorithms[self.type].main(self.data["Unsorted"].copy())
         koniec = time.perf_counter()
         t = (koniec - start)*10**6
         self.data["Time"].append(t)
         return t
     def check_sort(self):
+        self.faults=[]
         for i in range(1,len(self.data["Sorted"])):
             if self.data["Sorted"][i-1]>self.data["Sorted"][i]:
                 self.faults.append(i)
         return self.faults
-    # def selection_sort(self):
-    #     start = time.perf_counter()
-    #     selection(self.tab["Sorted"])
-    #     koniec = time.perf_counter()
-    #     t = (koniec - start)*10**6
-    #     self.data["Time"].append(t)
-    #     return t
-    #
-    # def custom_sort(self):
-    #     start = time.perf_counter()
-    #     custom(self.data["Sorted"])
-    #     koniec = time.perf_counter()
-    #     t=(koniec-start)*10**6
-    #     self.data["Time"].append(t)
-    #     return t
-    #
-    # def built_in_sort(self):
-    #     start = time.perf_counter()
-    #     built_in(self.data["Sorted"])
-    #     koniec = time.perf_counter()
-    #     t = (koniec - start)*10**6
-    #     self.data["Time"].append(t)
-    #     return t
-    #
-    # def techniques_sort(self):
-    #     print("techniques")
-    #     start = time.perf_counter()
-    #     techniques(self.data["Sorted"])
-    #     koniec = time.perf_counter()
-    #     t = (koniec - start) * 10 ** 6
-    #     return t
-    #     self.data["Time"].append(t)

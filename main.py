@@ -8,7 +8,7 @@ from Hlib_files.file_management import Hfiles, Habout
 from Hlib_files.data import Hgen
 from Hlib_files.visualize import Hvis
 from Hlib_files.compare import Hcomp
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtGui
 from pathlib import Path
 
 class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
@@ -17,6 +17,7 @@ class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
     # DEFINICJA ZMIENNYCH
         self.tab = {"Unsorted":[],"Sorted":[]}
         self.algos=[]
+        algos2=[]
         self.objalgo={}
     # KONFIGURACJA OKNA
         self.left = 100
@@ -26,6 +27,8 @@ class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.setWindowTitle('Algorytmy sortujące')
+        self.setWindowIcon(QtGui.QIcon('logo.png'))
+
     # KONFIGURACJA ZAKŁADEK W TOOLBARZE
         menus={}
         submenus={}
@@ -69,7 +72,6 @@ class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
         self.sort_layout=QVBoxLayout()
         self.pick_algo = QComboBox()
         #self.pick_algo.setPlaceholderText("Wybierz algorytm")
-
         dir = sorted((Path(__file__).resolve().parent / "Hlib_files" / "Algorithms").glob("*.py"))
         for file in dir:
             filename = list(file.name[:-3])
@@ -78,12 +80,15 @@ class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
                     filename.pop(i)
                     filename.insert(i," ")
             filename = ''.join(filename)
-            self.algos.append({filename:file.name[:-3]})
+            print(filename)
+            self.algos.append({filename: file.name[:-3]})
+            algos2.append(filename)
             self.pick_algo.addItem(filename)
-            self.objalgo.update({filename:None})
+            self.objalgo.update({file.name[:-3]:None})
         # self.pick_algo.addItems(self.algos.keys())
         self.pick_algo.setCurrentIndex(-1)
         self.pick_algo.setItemText(-1, "+Wybierz algorytm+")
+        self.pick_algo.setPlaceholderText("+Wybierz algorytm+")
         self.pick_algo.setFixedHeight(50)
         self.sort_layout.addWidget(self.pick_algo)
         self.Sort_Button=QPushButton("S   O   R   T")
@@ -96,22 +101,26 @@ class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
         self.MainLayout.setRowMinimumHeight(0,1)
         self.MainLayout.setColumnMinimumWidth(1,250)
         self.setLayout(self.MainLayout)
+
     #Wyświetlenie okna
         self.show()
     # Funkcja pośrednicząca w uruchamianiu sortowań
     def run_sort(self):
+        self.tab["Sorted"]=[]
         i =self.pick_algo.currentIndex()
         if i <0:
             QMessageBox.warning(self, "Błąd", "Wybierz algorytm")
-        else:
-            type = next(iter((self.algos[i].values())))
-            if self.objalgo[type]==None:
+        if i>=0:
+            type = next(iter(self.algos[i].values()))
+            print(type)
+            if self.objalgo[type] is None:
                 self.objalgo[type] = Hsort(type)
                 self.objalgo[type].load_algorithms()
-            self.objalgo[type].load_data(self.tab["Unsorted"])
+            self.objalgo[type].load_data(self.tab["Unsorted"].copy())
             print(self.objalgo[type].sort())
             print(self.objalgo[type].check_sort())
-            self.tab["Sorted"]=self.objalgo[type].data["Sorted"]
+            self.tab["Sorted"]=self.objalgo[type].data["Sorted"][:]
+            #print(f"{type}, {self.tab["Sorted"]}")
             Hvis.visualize_fun(self,"Sorted")
 
 app = QApplication(sys.argv)

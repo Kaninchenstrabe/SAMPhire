@@ -18,7 +18,7 @@ def main(tab):
             nowe.append(czesci[-1])
         czesci = nowe
     tab[:] = czesci[0]
-
+    return tab
 def insertion_sort( a):
     for i in range(1, len(a)):
         x = a[i]

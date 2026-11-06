@@ -17,5 +17,4 @@ def main(tab=[]):
         if l==i:
             l=k
         tab[l],tab[n-i-1]=tab[n-i-1],tab[l]
-
-
+    return tab
