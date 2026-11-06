@@ -1,10 +1,10 @@
 ### Moja Implementacja sortowania przez wybieranie
-def Selection_sort(n, tab=[]):
+def main(tab=[]):
     i=0
     j=0
     k=0
     l=0
-
+    n = len(tab)
     for i in range((n//2)):
         k=i
         l=i

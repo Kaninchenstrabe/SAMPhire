@@ -2,11 +2,13 @@ from PyQt5.QtWidgets import QDialog, QFormLayout, QSpinBox, QDialogButtonBox, QF
 import numpy
 from Hlib_files.visualize import Hvis
 class Hgen:
+
     def __init__(self):
         super().__init__()
         self.low = None
         self.high = None
         self.amount = None
+        self.imported = []
     def data_generate(self):
         #print("Generate")
         dialog = RangeDialog(self)
@@ -19,21 +21,50 @@ class Hgen:
 
     def data_import(self):
         options = QFileDialog.Options()
-        filename, _ = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "",
+        filename, filetype = QFileDialog.getOpenFileName(self, "QFileDialog.getOpenFileName()", "",
                                                   "Text files (*.txt);;CSV files (*.csv)", options=options)
+
         file = open(filename, 'r')
         text = file.read()
-        print(text)
+        num=[]
+        match filetype:
+            case "Text files (*.txt)":
+                self.delimiter='\n'
+            case "CSV files (*.csv)":
+                self.delimiter=','
+        for char in text:
+            match char:
+                case '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9':
+                        num.append(char)
+                case self.delimiter:
+                    if len(num)!=0:
+                        print(num)
+                        self.tab["Unsorted"].append(int(''.join(num)))
+                        num=[]
+                case _ :
+                    print("Nie zawracaj mi dupy, wróć z poprawnym plikiem")
+
+        #self.tab["Unsorted"] = self.imported
+        #print(self.tab["Unsorted"])
+        Hvis.visualize_fun(self, "Unsorted")
         file.close()
 
 
     def data_export(self):
         options = QFileDialog.Options()
-        filename, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getOpenFileName()", "",
+        filename, filetype = QFileDialog.getSaveFileName(self, "QFileDialog.getOpenFileName()", "",
                                                   "Text files (*.txt);;CSV files (*.csv)", options=options)
+
+        match filetype:
+            case "Text files (*.txt)":
+                delimiter = '\n'
+            case "CSV files (*.csv)":
+                delimiter = ','
         file = open(filename, 'w')
-        text = "Zawartość pliku"
-        file.write(text)
+        text=[]
+        for i in range(len(self.tab["Unsorted"])):
+            text.append(str(self.tab["Unsorted"][i])+delimiter)
+        file.write(''.join(text))
         file.close()
 
 class RangeDialog(QDialog):
