@@ -80,7 +80,7 @@ class RangeDialog(QDialog):
         self.amount = QSpinBox()
         self.low.setRange(self.MIN, self.MAX - 1)
         self.high.setRange(self.MIN + 1, self.MAX)
-        self.amount.setRange(0, 10**6)
+        self.amount.setRange(1, 10**6)
         self.low.setValue(0)
         self.high.setValue(100)
         self.amount.setValue(10)

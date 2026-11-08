@@ -37,3 +37,23 @@
     #     t = (koniec - start) * 10 ** 6
     #     return t
     #     self.data["Time"].append(t)
+
+
+
+    #
+    #
+    #     self.Main.setLayout(self.popupsiatka)
+    #     #self.dlugosciprob = QVBoxLayout()
+    # def comp_dlrprob(self, count):
+    #
+    #     while len(self.SpinBoxes) < count:
+    #         self.SpinBoxes.append(QSpinBox())
+    #         self.dlugosciprob.insertWidget(self.dlugosciprob.count()-1,self.SpinBoxes[-1])
+    #
+    #     while len(self.SpinBoxes) > count:
+    #         spin = self.SpinBoxes.pop()
+    #         self.dlugosciprob.removeWidget(spin)
+    #         spin.deleteLater()
+    #
+    #     self.popupsiatka.addLayout(self.dlugosciprob, 0, 2)
+

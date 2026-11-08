@@ -111,18 +111,22 @@ class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
         if i <0:
             QMessageBox.warning(self, "Błąd", "Wybierz algorytm")
         if i>=0:
-            type = next(iter(self.algos[i].values()))
-            print(type)
-            if self.objalgo[type] is None:
-                self.objalgo[type] = Hsort(type)
-                self.objalgo[type].load_algorithms()
-            self.objalgo[type].load_data(self.tab["Unsorted"].copy())
-            print(self.objalgo[type].sort())
-            print(self.objalgo[type].check_sort())
-            self.tab["Sorted"]=self.objalgo[type].data["Sorted"][:]
-            #print(f"{type}, {self.tab["Sorted"]}")
-            Hvis.visualize_fun(self,"Sorted")
-
+            if len(self.tab["Unsorted"])>0:
+                type = next(iter(self.algos[i].values()))
+                print(type)
+                if self.objalgo[type] is None:
+                    self.objalgo[type] = Hsort(type)
+                    self.objalgo[type].load_algorithms()
+                self.objalgo[type].load_data(self.tab["Unsorted"].copy())
+                print(self.objalgo[type].sort())
+                print(self.objalgo[type].check_sort())
+                self.tab["Sorted"]=self.objalgo[type].data["Sorted"][:]
+                #print(f"{type}, {self.tab["Sorted"]}")
+                Hvis.visualize_fun(self,"Sorted")
+            elif len(self.tab["Unsorted"])==1:
+                QMessageBox.warning(self, "Błąd", "Za mało danych wejściowych")
+            else:
+                QMessageBox.warning(self, "Błąd", "Brak danych wejściowych")
 app = QApplication(sys.argv)
 ex = App()
 app.exec_()
