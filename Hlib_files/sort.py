@@ -37,4 +37,8 @@ class Hsort:
         for i in range(1,len(self.data["Sorted"])):
             if self.data["Sorted"][i-1]>self.data["Sorted"][i]:
                 self.faults.append(i)
-        return self.faults
+        if len(self.faults) == 0:
+            return True
+        else:
+            return False
+        #return self.faults

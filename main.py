@@ -8,7 +8,8 @@ from Hlib_files.file_management import Hfiles, Habout
 from Hlib_files.data import Hgen
 from Hlib_files.visualize import Hvis
 from Hlib_files.compare import Hcomp
-from PyQt5 import QtCore, QtGui
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from pathlib import Path
 
 class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
@@ -27,7 +28,7 @@ class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.setWindowTitle('Algorytmy sortujące')
-        self.setWindowIcon(QtGui.QIcon('logo.png'))
+        self.setWindowIcon(QIcon('logo.png'))
 
     # KONFIGURACJA ZAKŁADEK W TOOLBARZE
         menus={}
@@ -95,6 +96,9 @@ class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
         self.Sort_Button.setFixedHeight(100)
         self.Sort_Button.clicked.connect(self.run_sort)
         self.sort_layout.addWidget(self.Sort_Button)
+        self.result=QLabel()
+        self.result.setAlignment(Qt.AlignCenter)
+        self.sort_layout.addWidget(self.result)
         self.MainLayout.addLayout(self.sort_layout, 1, 1)
         self.MainLayout.addWidget(self.graphs["Plot"]["Unsorted"], 1, 0)
         self.MainLayout.addWidget(self.graphs["Plot"]["Sorted"], 1, 2)
@@ -118,8 +122,10 @@ class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
                     self.objalgo[type] = Hsort(type)
                     self.objalgo[type].load_algorithms()
                 self.objalgo[type].load_data(self.tab["Unsorted"].copy())
-                print(self.objalgo[type].sort())
-                print(self.objalgo[type].check_sort())
+                time=self.objalgo[type].sort()
+                print(time)
+                success=self.objalgo[type].check_sort()
+                self.result.setText(f"Sortowanie zajęło {round(time,1)} mikrosekund \n i zakończyło się {"sukcesem" if success else "porażką"}")
                 self.tab["Sorted"]=self.objalgo[type].data["Sorted"][:]
                 #print(f"{type}, {self.tab["Sorted"]}")
                 Hvis.visualize_fun(self,"Sorted")
