@@ -1,7 +1,8 @@
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import *
 from pathlib import Path
-import PyQt5.QtCore
+from Hlib_files.sort import Hsort
+import numpy
 
 class IntValidationDelegate(QStyledItemDelegate):
 
@@ -27,8 +28,10 @@ class Hcomp:
         self.Main = QWidget()
         self.Main.setGeometry(1000, 100, 852, 450)
         self.Layouts={"Main": QGridLayout(), "Checkbox":QVBoxLayout()}
-        self.CheckBoxes={"Layout":QVBoxLayout(), "Widgets":[], "Data":[]}
+        self.CheckBoxes={"Layout":QVBoxLayout(), "Widgets":[], "Data":[], "Algos":[]}
+        self.Algorithms=[]
         self.parameters={"Rounds":[], "Length":[], "Min":[], "Max":[]}
+        self.algo_runtimes={}
         for file in sorted((Path(__file__).resolve().parent / "Algorithms").glob("*.py")):
             filename = list(file.name[:-3])
             for i in range(len(filename)):
@@ -38,6 +41,7 @@ class Hcomp:
             filename = ''.join(filename)
             self.CheckBoxes["Widgets"].append(QCheckBox(text=filename))
             self.CheckBoxes["Data"].append(False)
+            self.CheckBoxes["Algos"].append(file.name[:-3])
         for i in range(len(self.CheckBoxes["Widgets"])):
             self.CheckBoxes["Widgets"][i].stateChanged.connect(self.check_change)
         self.label=QLabel("\nWybierz algorytmy, które wezmą udział w badaniu")
@@ -108,7 +112,7 @@ class Hcomp:
                     except ValueError:
                         QMessageBox.warning(self, "Błąd", "Nieprawidłowe dane")
                 if item is None:
-                    self.value=0
+                    self.value=None
                 match i:
                     case 0:
                         self.parameters["Rounds"].append(self.value)
@@ -126,9 +130,27 @@ class Hcomp:
             self.table_read()
             #print(self.parameters)
             for i in range(min(len(self.parameters["Rounds"]), len(self.parameters["Length"]))):
-                if self.parameters["Rounds"][i] != 0 or self.parameters["Length"][i] != 0:
-                    print(f"Wygeneruj {self.parameters["Rounds"][i]} losowych danych o długości {self.parameters["Length"][i]}")
+                if self.parameters["Rounds"][i] != (0 or None) or self.parameters["Length"][i] != (0 or None):
+                    print(
+                        f"Wygeneruj {self.parameters["Rounds"][i]} losowych danych o długości {self.parameters["Length"][i]} od {self.parameters["Min"][i]} do {self.parameters["Max"][i]}")
+
+                    random = numpy.random.randint(self.parameters["Min"][i], self.parameters["Max"][i],size=self.parameters["Length"][i], dtype=int)
+                    for n in range(len(self.CheckBoxes["Data"])):
+                        if self.CheckBoxes["Data"][n]:
+                            temp = Hsort(self.CheckBoxes["Algos"][n])
+                            self.Algorithms.append(temp)
+                            self.Algorithms[-1].load_algorithms()
+                            self.Algorithms[-1].load_data(random)
+
+                            print(self.Algorithms[-1])
+                            time=self.Algorithms[-1].sort()
+                            self.algo_runtimes.update({self.CheckBoxes["Algos"][n], time})
+
+                    print(self.algo_runtimes)
                     print(f"Posortuj te dane algorytmem {self.CheckBoxes["Data"]}")
+                    for algo in self.CheckBoxes["Widgets"].text():
+                        algo_r=Hsort(algo)
+                        print(algo_r)
             print(f"Policz średnią, pokaż wykres")
     def comp_set(self):
         self.Main.show()

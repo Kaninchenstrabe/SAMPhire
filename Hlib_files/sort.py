@@ -25,6 +25,7 @@ class Hsort:
             module=importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             self.algorithms.update({module.__name__:module})
+            print(f"x{module.__name__}")
     def sort(self):
         start = time.perf_counter()
         self.data["Sorted"]=self.algorithms[self.type].main(self.data["Unsorted"].copy())

@@ -18,7 +18,6 @@ class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
     # DEFINICJA ZMIENNYCH
         self.tab = {"Unsorted":[],"Sorted":[]}
         self.algos=[]
-        algos2=[]
         self.objalgo={}
     # KONFIGURACJA OKNA
         self.left = 100
@@ -83,7 +82,6 @@ class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
             filename = ''.join(filename)
             print(filename)
             self.algos.append({filename: file.name[:-3]})
-            algos2.append(filename)
             self.pick_algo.addItem(filename)
             self.objalgo.update({file.name[:-3]:None})
         # self.pick_algo.addItems(self.algos.keys())
