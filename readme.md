@@ -1,2 +1,2 @@
 SAMPhire 
-Searching Algorithms Measuring Program 
+Sorting Algorithms Measuring Program 
