@@ -6,13 +6,12 @@ import pyqtgraph as pg
 from Hlib_files.sort import Hsort
 from Hlib_files.file_management import Hfiles, Habout
 from Hlib_files.data import Hgen
-from Hlib_files.visualize import Hvis
 from Hlib_files.compare import Hcomp
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from pathlib import Path
 
-class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
+class App(Hfiles, Habout, Hgen, Hcomp, QMainWindow,QWidget):
     def __init__(self):
         super().__init__()
     # DEFINICJA ZMIENNYCH
@@ -126,11 +125,12 @@ class App(Hfiles, Habout, Hgen, Hvis, Hcomp, QMainWindow,QWidget):
                 self.result.setText(f"Sortowanie zajęło {round(time,1)} mikrosekund \n i zakończyło się {"sukcesem" if success else "porażką"}")
                 self.tab["Sorted"]=self.objalgo[type].data["Sorted"][:]
                 #print(f"{type}, {self.tab["Sorted"]}")
-                Hvis.visualize_fun(self,"Sorted")
+                self.visualize_fun(self, "Sorted")
             elif len(self.tab["Unsorted"])==1:
                 QMessageBox.warning(self, "Błąd", "Za mało danych wejściowych")
             else:
                 QMessageBox.warning(self, "Błąd", "Brak danych wejściowych")
+
 app = QApplication(sys.argv)
 ex = App()
 app.exec_()

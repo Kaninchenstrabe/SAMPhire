@@ -1,11 +1,10 @@
 import time
-from Hlib_files import visualize
+
 from Hlib_files.Algorithms.Custom import main as custom
 from Hlib_files.Algorithms.Selection import main as selection
 from Hlib_files.Algorithms.Techniques import main as techniques
 from Hlib_files.Algorithms.Built_in import main as built_in
 from PyQt5.QtWidgets import *
-from Hlib_files.visualize import Hvis
 import importlib.util
 from pathlib import Path
 class Hsort:
@@ -25,7 +24,6 @@ class Hsort:
             module=importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             self.algorithms.update({module.__name__:module})
-            print(f"x{module.__name__}")
     def sort(self):
         start = time.perf_counter()
         self.data["Sorted"]=self.algorithms[self.type].main(self.data["Unsorted"].copy())
@@ -39,7 +37,7 @@ class Hsort:
             if self.data["Sorted"][i-1]>self.data["Sorted"][i]:
                 self.faults.append(i)
         if len(self.faults) == 0:
-            return True
+            return 1
         else:
-            return False
+            return 0
         #return self.faults

@@ -3,6 +3,8 @@ from PyQt5.QtWidgets import *
 from pathlib import Path
 from Hlib_files.sort import Hsort
 import numpy
+import pandas as pd
+import matplotlib.pyplot as plt
 
 class IntValidationDelegate(QStyledItemDelegate):
 
@@ -32,6 +34,7 @@ class Hcomp:
         self.Algorithms=[]
         self.parameters={"Rounds":[], "Length":[], "Min":[], "Max":[]}
         self.algo_runtimes={}
+        self.algo_grades={}
         for file in sorted((Path(__file__).resolve().parent / "Algorithms").glob("*.py")):
             filename = list(file.name[:-3])
             for i in range(len(filename)):
@@ -63,9 +66,6 @@ class Hcomp:
         self.table.setRowCount(10)
         self.table.setColumnCount(4)
         self.table.setHorizontalHeaderLabels(["Rundy", "Długość \ndanych", "Min", "Max"])
-        #self.table.horizontalHeader().setStretchLastSection(True)
-        #self.table.setItem(0, 0, QTableWidgetItem("Ile podejść?"))
-        #self.table.setItem(0, 1, QTableWidgetItem("Ile elementów?"))
         self.Layouts["Main"].addWidget(self.table, 0, 1, 0, 2)
         self.Main.setLayout(self.Layouts["Main"])
 
@@ -102,62 +102,83 @@ class Hcomp:
         self.CheckBoxes["Data"][i]= not(self.CheckBoxes["Data"][i])
         print(self.CheckBoxes["Data"])
     def table_read(self):
-        self.value=0
+        #self.value=0
         for i in range(4):
             for j in range(10):
                 item = self.table.item(j,i)
                 if item is not None:
                     try:
-                        self.value = int(item.text())
+                        value = int(item.text())
+                        match i:
+                            case 0:
+                                self.parameters["Rounds"].append(value)
+                            case 1:
+                                self.parameters["Length"].append(value)
+                            case 2:
+                                self.parameters["Min"].append(value)
+                            case 3:
+                                self.parameters["Max"].append(value)
+
                     except ValueError:
                         QMessageBox.warning(self, "Błąd", "Nieprawidłowe dane")
-                if item is None:
-                    self.value=None
-                match i:
-                    case 0:
-                        self.parameters["Rounds"].append(self.value)
-                    case 1:
-                        self.parameters["Length"].append(self.value)
-                    case 2:
-                        self.parameters["Min"].append(self.value)
-                    case 3:
-                        self.parameters["Max"].append(self.value)
+
     def comp_run(self):
+        self.Main.close()
         if sum(self.CheckBoxes["Data"]) == 0:
             QMessageBox.warning(self, "Błąd", "Nie wybrano żadnego algorytmu do zbadania")
         else:
             print("Ok badam")
             self.table_read()
-            #print(self.parameters)
-            for i in range(min(len(self.parameters["Rounds"]), len(self.parameters["Length"]))):
-                if self.parameters["Rounds"][i] != (0 or None) or self.parameters["Length"][i] != (0 or None):
-                    print(
-                        f"Wygeneruj {self.parameters["Rounds"][i]} losowych danych o długości {self.parameters["Length"][i]} od {self.parameters["Min"][i]} do {self.parameters["Max"][i]}")
+            print(self.parameters)
 
-                    random = numpy.random.randint(self.parameters["Min"][i], self.parameters["Max"][i],size=self.parameters["Length"][i], dtype=int)
-                    for n in range(len(self.CheckBoxes["Data"])):
-                        if self.CheckBoxes["Data"][n]:
-                            temp = Hsort(self.CheckBoxes["Algos"][n])
-                            self.Algorithms.append(temp)
-                            self.Algorithms[-1].load_algorithms()
-                            self.Algorithms[-1].load_data(random)
+            stages=len(self.parameters["Rounds"])
+            for k in range(stages):#
+                for i in range(self.parameters["Rounds"][k]):
+                    if self.parameters["Rounds"][k] != (0 or None) or self.parameters["Length"][k] != (0 or None):
+                        random = numpy.random.randint(self.parameters["Min"][k], self.parameters["Max"][k],size=self.parameters["Length"][k], dtype=int)
+                        for n in range(len(self.CheckBoxes["Data"])):
+                            if self.CheckBoxes["Data"][n]:
+                                #print(f"Posortuj te dane algorytmem {self.CheckBoxes["Algos"][n]}")
+                                temp = Hsort(self.CheckBoxes["Algos"][n])
+                                self.Algorithms.append(temp)
+                                self.Algorithms[-1].load_algorithms()
+                                self.Algorithms[-1].load_data(random)
+                                time=self.Algorithms[-1].sort()
+                                grade = self.Algorithms[-1].check_sort()
+                                if self.CheckBoxes["Algos"][n] not in self.algo_runtimes:
+                                    self.algo_runtimes.update({self.CheckBoxes["Algos"][n]: [[] for _ in range(stages)]})
+                                    self.algo_grades.update({self.CheckBoxes["Algos"][n]: [[] for _ in range(stages)]})
+                                self.algo_runtimes[self.CheckBoxes["Algos"][n]][k].append(round(time,2))
+                                self.algo_grades[self.CheckBoxes["Algos"][n]][k].append(grade)
 
-                            print(self.Algorithms[-1])
-                            time=self.Algorithms[-1].sort()
-                            self.algo_runtimes.update({self.CheckBoxes["Algos"][n], time})
-
-                    print(self.algo_runtimes)
-                    print(f"Posortuj te dane algorytmem {self.CheckBoxes["Data"]}")
-                    for algo in self.CheckBoxes["Widgets"].text():
-                        algo_r=Hsort(algo)
-                        print(algo_r)
+                self.comp_analyze()
             print(f"Policz średnią, pokaż wykres")
+            self.comp_show()
+    def comp_analyze(self):
+        self.avg={"Time":{}, "Grade":{}}
+        for name, all_times in self.algo_runtimes.items():
+            self.avg["Time"][name] = []
+            for index, times in enumerate(all_times):
+                print(f"{index}, {times}")
+                self.avg["Time"][name].append(sum(times)/max(1,len(times)))
+        for name, all_grades in self.algo_grades.items():
+            self.avg["Grade"][name] = []
+            for index, grades in enumerate(all_grades):
+                print(f"{index}, {grades}")
+                self.avg["Grade"][name].append(sum(grades)/max(1,len(grades)))
+        print(self.avg)
     def comp_set(self):
         self.Main.show()
         print("Settings")
-
     def comp_show(self):
-        print("Show")
+        df = pd.DataFrame(self.avg["Time"], index=self.parameters["Length"])
+        df = df.sort_index()
+        ax = df.plot(marker='o', title='Średni czas sortowania', logy=True, logx=True)
+        ax.set_ylabel('Czas (skala logarytmiczna)')
+        ax.set_xlabel('Długość zestawu danych (skala logarytmiczna')
+        ax.legend(title='Algorytm')
+        ax.grid(True, which='both', alpha=0.3)
 
+        plt.show()
     def comp_explain(self):
         print("Explain")

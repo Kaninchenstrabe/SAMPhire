@@ -33,6 +33,7 @@ class Hgen:
                 self.delimiter='\n'
             case "CSV files (*.csv)":
                 self.delimiter=','
+        self.tab["Unsorted"]=[]
         for char in text:
             match char:
                 case '0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9':

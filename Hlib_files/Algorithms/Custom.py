@@ -4,7 +4,6 @@ def main(tab):
         return tab
     div = max(1, n.bit_length() - 1)
     q = n // div
-    czesci = []
     czesci = [tab[i * q:(i + 1) * q] for i in range(div - 1)]
     czesci.append(tab[(div - 1) * q:])
     for c in czesci:
